@@ -57,9 +57,16 @@ export default function OnboardingIndex() {
             
             <TouchableOpacity 
               style={styles.ctaButton}
-              onPress={() => router.push('/onboarding/quiz')}
+              onPress={() => router.push('/(auth)/sign-up')}
             >
               <Text style={styles.ctaButtonText}>Get Started</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={styles.signInButton}
+              onPress={() => router.push('/(auth)/sign-in')}
+            >
+              <Text style={styles.signInButtonText}>Already have an account? Sign In</Text>
             </TouchableOpacity>
             
             <Text style={styles.disclaimer}>
@@ -151,6 +158,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Inter-SemiBold',
     color: '#0EA5E9',
+  },
+  signInButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    marginBottom: 16,
+  },
+  signInButtonText: {
+    fontSize: 16,
+    fontFamily: 'Inter-Medium',
+    color: 'rgba(255, 255, 255, 0.9)',
   },
   disclaimer: {
     fontSize: 14,

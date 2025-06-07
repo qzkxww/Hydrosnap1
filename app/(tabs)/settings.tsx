@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Switch,
+  Alert,
 } from 'react-native';
 import { 
   Bell,
@@ -18,13 +19,42 @@ import {
   ChevronRight,
   Star,
   Coffee,
-  LogOut
+  LogOut,
+  User
 } from 'lucide-react-native';
+import { useAuth } from '@/contexts/AuthContext';
+import { router } from 'expo-router';
 
 export default function SettingsTab() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [darkModeEnabled, setDarkModeEnabled] = useState(false);
   const [metricUnits, setMetricUnits] = useState(true);
+  const { user, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    Alert.alert(
+      'Sign Out',
+      'Are you sure you want to sign out?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Sign Out',
+          style: 'destructive',
+          onPress: async () => {
+            const { error } = await signOut();
+            if (error) {
+              Alert.alert('Error', 'Failed to sign out. Please try again.');
+            } else {
+              router.replace('/onboarding');
+            }
+          },
+        },
+      ]
+    );
+  };
 
   const SettingItem = ({ 
     icon, 
@@ -90,6 +120,17 @@ export default function SettingsTab() {
         <View style={styles.header}>
           <Text style={styles.title}>Settings</Text>
           <Text style={styles.subtitle}>Customize your HydroSnap experience</Text>
+        </View>
+
+        {/* User Profile */}
+        <View style={styles.profileCard}>
+          <View style={styles.profileAvatar}>
+            <User size={24} color="#0EA5E9" strokeWidth={2} />
+          </View>
+          <View style={styles.profileInfo}>
+            <Text style={styles.profileName}>{user?.user_metadata?.full_name || 'User'}</Text>
+            <Text style={styles.profileEmail}>{user?.email}</Text>
+          </View>
         </View>
 
         {/* Premium Banner */}
@@ -184,7 +225,7 @@ export default function SettingsTab() {
           <SettingItem
             icon={<LogOut size={20} color="#64748b" strokeWidth={2} />}
             title="Sign Out"
-            onPress={() => {}}
+            onPress={handleSignOut}
           />
         </View>
 
@@ -221,6 +262,42 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
+    fontFamily: 'Inter-Regular',
+    color: '#64748b',
+  },
+  profileCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: 20,
+    padding: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 12,
+    elevation: 3,
+  },
+  profileAvatar: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#f0f9ff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  profileInfo: {
+    flex: 1,
+  },
+  profileName: {
+    fontSize: 18,
+    fontFamily: 'Inter-SemiBold',
+    color: '#1e293b',
+    marginBottom: 4,
+  },
+  profileEmail: {
+    fontSize: 14,
     fontFamily: 'Inter-Regular',
     color: '#64748b',
   },
